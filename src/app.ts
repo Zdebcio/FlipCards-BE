@@ -2,14 +2,16 @@ import express from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
+import mongoose from 'mongoose';
 
 import * as middlewares from './middlewares';
 import api from './routes';
 import initializeSwagger from './config/swagger.config';
-
-require('dotenv').config();
+import { dbConnection } from './db';
 
 const app = express();
+
+mongoose.connect(dbConnection.url, dbConnection.options);
 
 app.use(morgan('dev'));
 app.use(helmet());

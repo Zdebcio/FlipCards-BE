@@ -1,6 +1,22 @@
+import jwt from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
 
 import ErrorResponse from './interfaces/ErrorResponse.interface';
+import { TOKEN_SECRET } from './config/env.config';
+
+export function verifyToken(req: Request, res: Response, next: NextFunction) {
+  const authHeader = req.header('Authorization');
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, TOKEN_SECRET ?? '', (err, user) => {
+    if (err) return res.sendStatus(403);
+
+    req.user = user;
+    next();
+  });
+}
 
 export function notFound(req: Request, res: Response, next: NextFunction) {
   res.status(404);

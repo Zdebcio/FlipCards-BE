@@ -1,9 +1,9 @@
 import express from 'express';
 
-import emojis from './emojis.router';
+import user from './user.router';
 
 const router = express.Router();
 
-router.use('/emojis', emojis);
+router.use('/user', user);
 
 export default router;

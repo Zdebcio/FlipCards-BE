@@ -17,5 +17,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["./*.js", "src/**/*.ts", "test/**/*.ts"]
+  "include": ["./*.js", "src/**/*.ts", "test/**/*.ts"],
+  "files": ["types.d.ts"]
 }

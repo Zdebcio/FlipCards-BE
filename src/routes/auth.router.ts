@@ -1,9 +1,8 @@
 import express from 'express';
-import UserController from '@/controllers/user.controller';
-import { verifyToken } from '@/middlewares';
+import AuthController from '@/controllers/auth.controller';
 
 const router = express.Router();
-const auth = new UserController();
+const auth = new AuthController();
 
 router.post('/login', auth.login);
 

@@ -13,7 +13,7 @@ const initializeSwagger = (app: Express) => {
         description: 'Example docs',
       },
     },
-    apis: ['src/routes/*.router.ts'],
+    apis: ['src/swagger/*.yaml'],
   };
 
   const specs = swaggerJSDoc(options);

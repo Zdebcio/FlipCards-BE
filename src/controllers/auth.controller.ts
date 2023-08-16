@@ -4,12 +4,12 @@ import { ZodError } from 'zod';
 import { MongoError } from 'mongodb';
 
 import UserModel from '@/models/user.model';
-import { UserSchema } from '@/schema/user.schema';
+import { AuthSchema } from '@/schema/auth.schema';
 import { generateAccessToken } from '@/utils/auth.utils';
 
 const comparePassword = (password: string, hashPassword: string) => bcrypt.compareSync(password, hashPassword);
 
-export default class UserController {
+export default class AuthController {
   public login = async (req: Request, res: Response) => {
     try {
       const user = await UserModel.findOne({ email: req.body.email });
@@ -36,7 +36,7 @@ export default class UserController {
 
   public register = async (req: Request, res: Response) => {
     try {
-      UserSchema.parse(req.body);
+      AuthSchema.parse(req.body);
 
       const salt = await bcrypt.genSalt(10);
       const hashPassword = await bcrypt.hash(req.body.password, salt);

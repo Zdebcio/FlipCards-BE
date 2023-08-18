@@ -22,14 +22,13 @@ export default class AuthController {
 
       const accessToken = generateAccessToken(user._id);
 
-      res.header('Authorization', accessToken).status(200).send({
+      res.header('Authorization', accessToken).header('Access-Control-Expose-Headers', 'authorization').status(200).send({
         id: user._id,
         email: user.email,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       });
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   };

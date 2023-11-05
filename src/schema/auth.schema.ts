@@ -7,7 +7,6 @@ export const AuthSchema = z.object({
     .string({ required_error: 'Password is required' })
     .min(8)
     .refine(value => {
-      console.log(passwordReg.test(value));
       return passwordReg.test(value);
     }, 'Password is too weak'),
 });

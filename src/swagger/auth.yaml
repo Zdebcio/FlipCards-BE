@@ -11,10 +11,10 @@ paths:
           description: user Data
           required: true
           schema:
-            $ref: '#/definitions/users'
+            $ref: '#/definitions/credentials'
       responses:
         200:
-          description: 'Created'
+          description: 'OK'
           content:
             application/json:
               schema:
@@ -30,13 +30,13 @@ paths:
                     type: string
         400:
           description: 'Bad Request'
-        409:
-          description: 'Conflict'
+        422:
+          description: 'Validation Error'
         500:
           description: 'Server Error'
 
   /auth/register:
-    # [POST] Login
+    # [POST] Register
     post:
       tags:
         - auth
@@ -47,7 +47,7 @@ paths:
           description: user Data
           required: true
           schema:
-            $ref: '#/definitions/users'
+            $ref: '#/definitions/credentials'
       responses:
         201:
           description: 'Created'
@@ -62,7 +62,7 @@ paths:
 
 # definitions
 definitions:
-  users:
+  credentials:
     type: object
     required:
       - email
@@ -70,10 +70,8 @@ definitions:
     properties:
       email:
         type: string
-        description: user Email
       password:
         type: string
-        description: user Password
 
 schemes:
   - https

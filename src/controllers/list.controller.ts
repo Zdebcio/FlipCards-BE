@@ -12,6 +12,7 @@ export default class ListController {
 
       const newList = new ListModel({
         ...req.body,
+        userID: req.user.id,
       });
 
       await newList.save();

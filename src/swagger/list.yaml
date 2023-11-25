@@ -1,0 +1,39 @@
+paths:
+  /list/create:
+    # [POST] Create list
+    post:
+      tags:
+        - list
+      summary: Create list
+      parameters:
+        - name: body
+          in: body
+          description: list name
+          required: true
+          schema:
+            $ref: '#/definitions/create'
+      responses:
+        200:
+          description: 'Created'
+        400:
+          description: 'Bad Request'
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        500:
+          description: 'Server Error'
+
+# definitions
+definitions:
+  create:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+
+schemes:
+  - https
+  - http

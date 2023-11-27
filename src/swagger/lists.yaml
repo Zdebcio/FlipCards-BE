@@ -1,5 +1,5 @@
 paths:
-  /list/create:
+  /lists/create:
     # [POST] Create list
     post:
       tags:

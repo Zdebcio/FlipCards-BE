@@ -1,6 +1,4 @@
-import { Request, Response } from 'express';
-import { ZodError } from 'zod';
-import { MongoError } from 'mongodb';
+import { NextFunction, Request, Response } from 'express';
 
 import { CreateListSchema, GetUserListsSchema, GetUserListsType } from '@/schema/lists.schema';
 import ListModel from '@/models/list.model';
@@ -8,7 +6,7 @@ import { PaginationSchema, PaginationType } from '@/schema/pagination.schema';
 import { applyPagination, applySorting } from '@/utils/pagination.utils';
 
 export default class ListsController {
-  public create = async (req: Request, res: Response) => {
+  public create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       CreateListSchema.parse(req.body);
 
@@ -20,17 +18,11 @@ export default class ListsController {
       await newList.save();
       res.sendStatus(201);
     } catch (err) {
-      if (err instanceof ZodError) {
-        return res.status(422).send(err.issues);
-      }
-
-      if (err instanceof MongoError) return res.status(409).send(err);
-
-      res.status(400).send(err);
+      next(err);
     }
   };
 
-  public getUserLists = async (req: Request<{}, {}, GetUserListsType, PaginationType>, res: Response) => {
+  public getUserLists = async (req: Request<{}, {}, GetUserListsType, PaginationType>, res: Response, next: NextFunction) => {
     const { name } = req.body;
     const { skip, limit, sort, sortBy } = req.query;
 
@@ -48,13 +40,7 @@ export default class ListsController {
 
       res.status(200).send(lists);
     } catch (err) {
-      if (err instanceof ZodError) {
-        return res.status(422).send(err.issues);
-      }
-
-      if (err instanceof MongoError) return res.status(409).send(err);
-
-      res.status(400).send(err);
+      next(err);
     }
   };
 }

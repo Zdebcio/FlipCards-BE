@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
-
-import ErrorResponse from './interfaces/ErrorResponse.interface';
 import { TOKEN_SECRET } from './config/env.config';
+import { ZodError } from 'zod';
+import { MongoError } from 'mongodb';
+import { Error } from 'mongoose';
 
 export function verifyToken(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.header('Authorization');
@@ -26,16 +27,45 @@ export function notFound(req: Request, res: Response, next: NextFunction) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function errorHandler(
-  err: Error,
+  error: Error,
   req: Request,
-  res: Response<ErrorResponse>,
+  // res: Response<ErrorResponse>,
+  res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction,
 ) {
-  const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
-  res.status(statusCode);
-  res.json({
-    message: err.message,
-    stack: process.env.NODE_ENV === 'production' ? '🥞' : err.stack,
+  if (error instanceof ZodError) {
+    console.log(error);
+    res.status(422);
+    return res.json({
+      status: 422,
+      message: 'Validation error',
+      details: error.errors,
+    });
+  }
+
+  if (error instanceof MongoError) {
+    res.status(500);
+    return res.json({
+      status: 500,
+      message: 'Database error',
+      details: error.message,
+    });
+  }
+
+  if (error instanceof Error.ValidatorError) {
+    res.status(422);
+    return res.json({
+      status: 422,
+      message: 'Validation error',
+      details: error,
+    });
+  }
+
+  res.status(500);
+  return res.json({
+    status: 500,
+    message: 'Unexpected error',
+    details: error.message || {},
   });
 }

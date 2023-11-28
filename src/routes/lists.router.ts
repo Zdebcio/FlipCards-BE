@@ -2,10 +2,10 @@ import express from 'express';
 import ListsController from '@/controllers/lists.controller';
 
 const router = express.Router();
-const list = new ListsController();
+const lists = new ListsController();
 
-router.post('/create', list.create);
+router.post('/create', lists.create);
 
-router.get('/user-lists', list.getUserLists);
+router.get('/user-lists', lists.getUserLists);
 
 export default router;

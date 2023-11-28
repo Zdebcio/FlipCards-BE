@@ -1,16 +1,15 @@
 import bcrypt from 'bcrypt';
-import { Request, Response } from 'express';
-import { ZodError } from 'zod';
-import { MongoError } from 'mongodb';
+import { NextFunction, Request, Response } from 'express';
 
 import UserModel from '@/models/user.model';
 import { AuthSchema } from '@/schema/auth.schema';
 import { generateAccessToken } from '@/utils/auth.utils';
+import { Error } from 'mongoose';
 
 const comparePassword = (password: string, hashPassword: string) => bcrypt.compareSync(password, hashPassword);
 
 export default class AuthController {
-  public login = async (req: Request, res: Response) => {
+  public login = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const user = await UserModel.findOne({ email: req.body.email });
 
@@ -29,16 +28,26 @@ export default class AuthController {
         updatedAt: user.updatedAt,
       });
     } catch (err) {
-      res.status(400).send(err);
+      next(err);
     }
   };
 
-  public register = async (req: Request, res: Response) => {
+  public register = async (req: Request, res: Response, next: NextFunction) => {
     try {
       AuthSchema.parse(req.body);
 
       const salt = await bcrypt.genSalt(10);
       const hashPassword = await bcrypt.hash(req.body.password, salt);
+
+      const userExist = await UserModel.findOne({ email: req.body.email });
+
+      if (userExist) {
+        throw new Error.ValidatorError({
+          message: 'User already exist',
+          value: req.body.email,
+          path: 'email',
+        });
+      }
 
       const user = new UserModel({
         ...req.body,
@@ -48,13 +57,7 @@ export default class AuthController {
       await user.save();
       res.sendStatus(201);
     } catch (err) {
-      if (err instanceof ZodError) {
-        return res.status(422).send(err.issues);
-      }
-
-      if (err instanceof MongoError && err.code === 11000) return res.status(409).send(err);
-
-      res.status(400).send(err);
+      next(err);
     }
   };
 }

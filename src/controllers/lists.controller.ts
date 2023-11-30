@@ -30,13 +30,15 @@ export default class ListsController {
       GetUserListsSchema.parse(req.body);
       PaginationSchema.parse(req.query);
 
-      const lists = await ListModel.find({
+      const query = ListModel.find({
         name: { $regex: name, $options: 'i' },
         userID: req.user.id,
       });
 
-      applyPagination(lists, { skip, limit });
-      applySorting(lists, { sortBy, sort });
+      applyPagination(query, { skip, limit });
+      applySorting(query, { sortBy, sort });
+
+      const lists = await query.exec();
 
       res.status(200).send(lists);
     } catch (err) {

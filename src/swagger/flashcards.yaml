@@ -15,6 +15,10 @@ paths:
       responses:
         201:
           description: 'Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/flashcard'
         400:
           description: 'Bad Request'
         401:
@@ -41,6 +45,25 @@ definitions:
         type: array
         items:
           type: string
+
+responses:
+  flashcard:
+    type: object
+    properties:
+      _id:
+        type: string
+      forwardText:
+        type: string
+      backwardText:
+        type: string
+      userID:
+        type: string
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+      __v:
+        type: integer
 
 schemes:
   - https

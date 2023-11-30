@@ -16,7 +16,7 @@ export default class ListsController {
       });
 
       await newList.save();
-      res.sendStatus(201);
+      res.status(201).send(newList);
     } catch (err) {
       next(err);
     }

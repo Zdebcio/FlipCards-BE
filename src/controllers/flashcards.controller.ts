@@ -47,7 +47,7 @@ export default class FlashcardsController {
 
       await FlashcardsInListsModel.insertMany(connectionsWithLists);
 
-      res.sendStatus(201);
+      res.status(201).send(newFlashcard);
     } catch (err) {
       next(err);
     }

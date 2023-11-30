@@ -15,6 +15,10 @@ paths:
       responses:
         201:
           description: 'Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/list'
         400:
           description: 'Bad Request'
         401:

@@ -11,7 +11,7 @@ paths:
           description: list name
           required: true
           schema:
-            $ref: '#/definitions/create'
+            $ref: '#/definitions/createList'
       responses:
         201:
           description: 'Created'
@@ -73,7 +73,7 @@ paths:
 
 # definitions
 definitions:
-  create:
+  createList:
     type: object
     required:
       - name

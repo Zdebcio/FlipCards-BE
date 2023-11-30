@@ -18,16 +18,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  email:
-                    type: string
-                  createdAt:
-                    type: string
-                  updatedAt:
-                    type: string
+                $ref: '#/responses/user'
         400:
           description: 'Bad Request'
         422:
@@ -71,6 +62,19 @@ definitions:
       email:
         type: string
       password:
+        type: string
+
+responses:
+  user:
+    type: object
+    properties:
+      id:
+        type: string
+      email:
+        type: string
+      createdAt:
+        type: string
+      updatedAt:
         type: string
 
 schemes:

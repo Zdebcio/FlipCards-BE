@@ -2,6 +2,7 @@ import FlashcardModel from '@/models/flashcard.model';
 import FlashcardsInListsModel from '@/models/flashcardsInLists.model';
 import ListModel from '@/models/list.model';
 import { CreateFlashcardSchema, CreateFlashcardType } from '@/schema/flashcards.schema';
+import { ErrorType } from '@/types/Error.types';
 import { NextFunction, Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 import { Error } from 'mongoose';
@@ -20,6 +21,7 @@ export default class FlashcardsController {
           message: `${idsNotValid.join(', ')} are not valid`,
           value: idsNotValid,
           path: '_id',
+          type: ErrorType.Validation,
         });
       }
 
@@ -32,6 +34,7 @@ export default class FlashcardsController {
           message: `${notExistLists.join(', ')} no exists`,
           value: notExistLists,
           path: '_id',
+          type: ErrorType.Validation,
         });
       }
 

@@ -4,6 +4,7 @@ import { TOKEN_SECRET } from './config/env.config';
 import { ZodError } from 'zod';
 import { MongoError } from 'mongodb';
 import { Error } from 'mongoose';
+import { ErrorType } from './types/Error.types';
 
 export function verifyToken(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.header('Authorization');
@@ -54,6 +55,14 @@ export function errorHandler(
   }
 
   if (error instanceof Error.ValidatorError) {
+    if (error.kind === ErrorType.Duplicate) {
+      res.status(409);
+      return res.json({
+        status: 409,
+        message: 'Duplicated item',
+        details: error,
+      });
+    }
     res.status(422);
     return res.json({
       status: 422,

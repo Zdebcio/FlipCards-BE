@@ -5,6 +5,7 @@ import UserModel from '@/models/user.model';
 import { AuthSchema } from '@/schema/auth.schema';
 import { generateAccessToken } from '@/utils/auth.utils';
 import { Error } from 'mongoose';
+import { ErrorType } from '@/types/Error.types';
 
 const comparePassword = (password: string, hashPassword: string) => bcrypt.compareSync(password, hashPassword);
 
@@ -46,6 +47,7 @@ export default class AuthController {
           message: 'User already exist',
           value: req.body.email,
           path: 'email',
+          type: ErrorType.Duplicate,
         });
       }
 

@@ -2,8 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 
 import { CreateListSchema, GetUserListsSchema, GetUserListsType } from '@/schema/lists.schema';
 import ListModel from '@/models/list.model';
-import { PaginationSchema, PaginationType } from '@/schema/pagination.schema';
+import { PaginationType } from '@/schema/pagination.schema';
 import { applyPagination, applySorting } from '@/utils/pagination.utils';
+import defaultsConfig from '@/config/defaults.config';
 
 export default class ListsController {
   public create = async (req: Request, res: Response, next: NextFunction) => {
@@ -22,25 +23,27 @@ export default class ListsController {
     }
   };
 
-  public getUserLists = async (req: Request<{}, {}, GetUserListsType, PaginationType>, res: Response, next: NextFunction) => {
-    const { name } = req.body;
-    const { skip, limit, sort, sortBy } = req.query;
-
+  public getUserLists = async (req: Request<{}, {}, GetUserListsType, GetUserListsType & PaginationType>, res: Response, next: NextFunction) => {
     try {
-      GetUserListsSchema.parse(req.body);
-      PaginationSchema.parse(req.query);
+      const { skip = defaultsConfig.skip, limit = defaultsConfig.limit, sort, sortBy, name } = GetUserListsSchema.parse(req.query);
 
-      const query = ListModel.find({
-        name: { $regex: name, $options: 'i' },
+      const queryConditions = {
+        name: { $regex: name ?? '', $options: 'i' },
         userID: req.user.id,
-      });
+      };
+
+      const query = ListModel.find(queryConditions);
+      const countQuery = ListModel.countDocuments(queryConditions);
 
       applyPagination(query, { skip, limit });
       applySorting(query, { sortBy, sort });
 
       const lists = await query.exec();
+      const count = await countQuery.exec();
 
-      res.status(200).send(lists);
+      console.log(count);
+
+      res.status(200).send({ data: lists, count, skip, limit });
     } catch (err) {
       next(err);
     }

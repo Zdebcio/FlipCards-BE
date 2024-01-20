@@ -1,5 +1,6 @@
 import { namingReg } from '@/utils/regex';
 import { TypeOf, z } from 'zod';
+import { PaginationSchema } from './pagination.schema';
 
 export const CreateListSchema = z.object({
   name: z
@@ -12,14 +13,15 @@ export const CreateListSchema = z.object({
     }, 'You can use only letters, numbers, spaces, hyphens, underscores and apostrophes'),
 });
 
-export const GetUserListsSchema = z.object({
+export const GetUserListsSchema = PaginationSchema.extend({
   name: z
     .string()
     .trim()
     .max(20, 'The value is too long. The maximum number of characters is 20')
     .refine(value => {
       return namingReg.test(value);
-    }, 'You can use only letters, numbers, spaces, hyphens, underscores and apostrophes'),
+    }, 'You can use only letters, numbers, spaces, hyphens, underscores and apostrophes')
+    .optional(),
 });
 
 export type GetUserListsType = TypeOf<typeof GetUserListsSchema>;

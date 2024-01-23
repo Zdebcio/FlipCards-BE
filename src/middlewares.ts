@@ -36,7 +36,6 @@ export function errorHandler(
   next: NextFunction,
 ) {
   if (error instanceof ZodError) {
-    console.log(error);
     res.status(422);
     return res.json({
       status: 422,
@@ -67,6 +66,15 @@ export function errorHandler(
     return res.json({
       status: 422,
       message: 'Validation error',
+      details: error,
+    });
+  }
+
+  if (error instanceof Error.DocumentNotFoundError) {
+    res.status(404);
+    return res.json({
+      status: 404,
+      message: 'Not found',
       details: error,
     });
   }

@@ -41,8 +41,6 @@ export default class ListsController {
       const lists = await query.exec();
       const count = await countQuery.exec();
 
-      console.log(count);
-
       res.status(200).send({ data: lists, count, skip, limit });
     } catch (err) {
       next(err);

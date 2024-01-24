@@ -14,14 +14,7 @@ export const CreateListSchema = z.object({
 });
 
 export const GetUserListsSchema = PaginationSchema.extend({
-  name: z
-    .string()
-    .trim()
-    .max(20, 'The value is too long. The maximum number of characters is 20')
-    .refine(value => {
-      return namingReg.test(value);
-    }, 'You can use only letters, numbers, spaces, hyphens, underscores and apostrophes')
-    .optional(),
+  name: z.string().trim().optional(),
 });
 
 export type GetUserListsType = TypeOf<typeof GetUserListsSchema>;

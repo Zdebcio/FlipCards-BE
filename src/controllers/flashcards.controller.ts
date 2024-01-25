@@ -49,6 +49,7 @@ export default class FlashcardsController {
       };
 
       const flashcardsQuery = FlashcardModel.find(queryConditions);
+      const list = await ListModel.findOne({ _id: listID, userID: req.user.id });
 
       applyPagination(flashcardsQuery, { skip, limit });
       applySorting(flashcardsQuery, { sortBy, sort });
@@ -56,7 +57,7 @@ export default class FlashcardsController {
       const flashcards = await flashcardsQuery.exec();
       const count = await FlashcardModel.find(queryConditions).countDocuments();
 
-      res.status(200).send({ data: flashcards, count, skip, limit });
+      res.status(200).send({ ...list?.toObject(), data: flashcards, count, skip, limit });
     } catch (err) {
       next(err);
     }

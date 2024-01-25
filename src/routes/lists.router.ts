@@ -4,8 +4,9 @@ import ListsController from '@/controllers/lists.controller';
 const router = express.Router();
 const lists = new ListsController();
 
-router.post('/create', lists.create);
+router.get('/', lists.getLists);
+router.get('/:listID', lists.getList);
 
-router.get('/user-lists', lists.getUserLists);
+router.post('/create', lists.create);
 
 export default router;

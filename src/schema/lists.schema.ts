@@ -13,8 +13,16 @@ export const CreateListSchema = z.object({
     }, 'You can use only letters, numbers, spaces, hyphens, underscores and apostrophes'),
 });
 
-export const GetUserListsSchema = PaginationSchema.extend({
+export const GetListsSchema = PaginationSchema.extend({
   name: z.string().trim().optional(),
 });
 
-export type GetUserListsType = TypeOf<typeof GetUserListsSchema>;
+export type GetListsType = TypeOf<typeof GetListsSchema>;
+
+export const GetListSchema = PaginationSchema.extend({
+  forwardText: z.string().trim().optional(),
+  backwardText: z.string().trim().optional(),
+  listID: z.string().trim(),
+});
+
+export type GetListType = TypeOf<typeof GetListSchema>;

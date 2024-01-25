@@ -3,7 +3,7 @@ paths:
     # [POST] Create list
     post:
       tags:
-        - list
+        - lists
       summary: Create list
       parameters:
         - name: body
@@ -31,7 +31,7 @@ paths:
     # [GET] Get lists
     get:
       tags:
-        - list
+        - lists
       summary: Get lists
       parameters:
         - in: query
@@ -70,6 +70,34 @@ paths:
           description: 'Unauthorized'
         403:
           description: 'Forbidden'
+        500:
+          description: 'Server Error'
+  /lists/{listID}:
+    # [GET] Get lists
+    get:
+      tags:
+        - lists
+      summary: Get list
+      parameters:
+        - in: query
+          name: listID
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/list'
+        400:
+          description: 'Bad Request'
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'Not Found'
         500:
           description: 'Server Error'
 

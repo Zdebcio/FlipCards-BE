@@ -18,9 +18,3 @@ export const GetUserListsSchema = PaginationSchema.extend({
 });
 
 export type GetUserListsType = TypeOf<typeof GetUserListsSchema>;
-
-export const GetListSchema = z.object({
-  listID: z.string().trim(),
-});
-
-export type GetListType = TypeOf<typeof GetListSchema>;

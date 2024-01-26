@@ -19,9 +19,7 @@ export const GetListsSchema = PaginationSchema.extend({
 
 export type GetListsType = TypeOf<typeof GetListsSchema>;
 
-export const GetListSchema = PaginationSchema.extend({
-  forwardText: z.string().trim().optional(),
-  backwardText: z.string().trim().optional(),
+export const GetListSchema = z.object({
   listID: z.string().trim(),
 });
 

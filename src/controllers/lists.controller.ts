@@ -6,8 +6,6 @@ import { applyPagination, applySorting } from '@/utils/pagination.utils';
 import defaultsConfig from '@/config/defaults.config';
 import { Error } from 'mongoose';
 import { ObjectId } from 'mongodb';
-import FlashcardsInListsModel from '@/models/flashcardsInLists.model';
-import FlashcardModel from '@/models/flashcard.model';
 
 export default class ListsController {
   public create = async (req: Request, res: Response, next: NextFunction) => {
@@ -52,15 +50,7 @@ export default class ListsController {
 
   public getList = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const {
-        skip = defaultsConfig.skip,
-        limit = defaultsConfig.limit,
-        sort,
-        sortBy,
-        forwardText,
-        backwardText,
-        listID,
-      } = GetListSchema.parse({ ...req.query, ...req.params });
+      const { listID } = GetListSchema.parse(req.params);
 
       const isValidListID = ObjectId.isValid(listID);
       const userHaveList = ListModel.findOne({ _id: listID, userID: req.user.id });
@@ -69,29 +59,9 @@ export default class ListsController {
         throw new Error.DocumentNotFoundError('Not found');
       }
 
-      const flashcardsInLists = await FlashcardsInListsModel.find({ listID }).populate('flashcardID');
-
-      const flashcardsIDs: string[] = flashcardsInLists.map(item => item.flashcardID);
-
-      const queryConditions = {
-        forwardText: { $regex: forwardText ?? '', $options: 'i' },
-        backwardText: { $regex: backwardText ?? '', $options: 'i' },
-        userID: req.user.id,
-        _id: {
-          $in: flashcardsIDs,
-        },
-      };
-
-      const flashcardsQuery = FlashcardModel.find(queryConditions);
       const list = await ListModel.findOne({ _id: listID, userID: req.user.id });
 
-      applyPagination(flashcardsQuery, { skip, limit });
-      applySorting(flashcardsQuery, { sortBy, sort });
-
-      const flashcards = await flashcardsQuery.exec();
-      const count = await FlashcardModel.find(queryConditions).countDocuments();
-
-      res.status(200).send({ ...list?.toObject(), data: flashcards, count, skip, limit });
+      res.status(200).send(list);
     } catch (err) {
       next(err);
     }

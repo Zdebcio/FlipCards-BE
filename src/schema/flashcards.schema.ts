@@ -1,4 +1,5 @@
 import { TypeOf, z } from 'zod';
+import { PaginationSchema } from './pagination.schema';
 
 export const CreateFlashcardSchema = z.object({
   forwardText: z
@@ -20,3 +21,11 @@ export const CreateFlashcardSchema = z.object({
 });
 
 export type CreateFlashcardType = TypeOf<typeof CreateFlashcardSchema>;
+
+export const GetFlashcardsSchema = PaginationSchema.extend({
+  forwardText: z.string().trim().optional(),
+  backwardText: z.string().trim().optional(),
+  listID: z.string().trim().optional(),
+});
+
+export type GetFlashcardsType = TypeOf<typeof GetFlashcardsSchema>;

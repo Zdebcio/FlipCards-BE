@@ -32,10 +32,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  allOf:
-                    - $ref: '#/responses/getLists'
+                $ref: '#/responses/getLists'
         400:
           description: 'Bad Request'
         401:
@@ -52,39 +49,17 @@ paths:
       summary: Get list of flashcards
       parameters:
         - in: query
-          name: limit
-          schema:
-            type: integer
-        - in: query
-          name: skip
-          schema:
-            type: integer
-        - in: query
-          name: sort
+          name: listID
           schema:
             type: string
-        - in: query
-          name: sortBy
-          schema:
-            type: string
-        - in: query
-          name: forwardText
-          schema:
-            type: string
-        - in: query
-          name: backwardText
-          schema:
-            type: string
+          required: true
       responses:
         200:
           description: 'OK'
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  allOf:
-                    - $ref: '#/responses/getList'
+                $ref: '#/responses/getList'
         400:
           description: 'Bad Request'
         401:
@@ -177,16 +152,6 @@ responses:
       updatedAt:
         type: string
       __v:
-        type: integer
-      data:
-        type: array
-        items:
-          $ref: '#/responses/flashcard'
-      count:
-        type: integer
-      skip:
-        type: integer
-      limit:
         type: integer
 
 schemes:

@@ -1,4 +1,49 @@
 paths:
+  /flashcards/{listID}:
+    # [GET] Get list of flashcards
+    get:
+      tags:
+        - flashcards
+      summary: Get list of flashcards
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+        - in: query
+          name: skip
+          schema:
+            type: integer
+        - in: query
+          name: sort
+          schema:
+            type: string
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+        - in: query
+          name: listID
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/getFlashcards'
+        400:
+          description: 'Bad Request'
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'Not Found'
+        500:
+          description: 'Server Error'
+
   /flashcards/create:
     # [POST] Create flashcard
     post:
@@ -63,6 +108,19 @@ responses:
       updatedAt:
         type: string
       __v:
+        type: integer
+  getFlashcards:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/responses/flashcard'
+      count:
+        type: integer
+      skip:
+        type: integer
+      limit:
         type: integer
 
 schemes:

@@ -11,6 +11,10 @@ const flashcardsInListsSchema = new Schema(
       type: Schema.ObjectId,
       required: true,
     },
+    userID: {
+      type: Schema.ObjectId,
+      required: true,
+    },
   },
   { timestamps: true },
 );

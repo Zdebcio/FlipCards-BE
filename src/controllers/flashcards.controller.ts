@@ -2,11 +2,11 @@ import defaultsConfig from '@/config/defaults.config';
 import FlashcardModel from '@/models/flashcard.model';
 import FlashcardsInListsModel from '@/models/flashcardsInLists.model';
 import ListModel from '@/models/list.model';
-import { CreateFlashcardSchema, CreateFlashcardType, GetFlashcardsSchema } from '@/schema/flashcards.schema';
+import { CreateFlashcardSchema, CreateFlashcardType, DeleteFlashcardSchema, GetFlashcardsSchema } from '@/schema/flashcards.schema';
 import { ErrorType } from '@/types/Error.types';
 import { applyPagination, applySorting } from '@/utils/pagination.utils';
 import { NextFunction, Request, Response } from 'express';
-import { ObjectId } from 'mongodb';
+import { MongoError, ObjectId } from 'mongodb';
 import { Error } from 'mongoose';
 
 export default class FlashcardsController {
@@ -46,13 +46,57 @@ export default class FlashcardsController {
         userID: req.user.id,
       });
 
-      const connectionsWithLists = listIDs.map(listID => ({ flashcardID: newFlashcard.id, listID }));
+      const connectionsWithLists = listIDs.map(listID => ({ flashcardID: newFlashcard.id, listID, userID: req.user.id }));
 
       await newFlashcard.save();
 
       await FlashcardsInListsModel.insertMany(connectionsWithLists);
 
       res.status(201).send(newFlashcard);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public delete = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { listID, flashcardID } = DeleteFlashcardSchema.parse(req.params);
+
+      const isListIdNotValid = !ObjectId.isValid(listID);
+
+      if (isListIdNotValid) {
+        throw new Error.ValidatorError({
+          message: `${listID} is not valid`,
+          value: listID,
+          path: 'listID',
+          type: ErrorType.Validation,
+        });
+      }
+
+      const isFlashcardIdNotValid = !ObjectId.isValid(flashcardID);
+
+      if (isFlashcardIdNotValid) {
+        throw new Error.ValidatorError({
+          message: `${flashcardID} is not valid`,
+          value: flashcardID,
+          path: 'flashcardID',
+          type: ErrorType.Validation,
+        });
+      }
+
+      const deletingStatus = await FlashcardsInListsModel.deleteOne({ flashcardID, listID, userID: req.user.id });
+
+      if (deletingStatus.deletedCount === 0) {
+        throw new MongoError('Flashcard is not connected to list');
+      }
+
+      const flashcardInList = await FlashcardsInListsModel.findOne({ flashcardID, userID: req.user.id });
+
+      if (!flashcardInList) {
+        await FlashcardModel.deleteOne({ _id: flashcardID, userID: req.user.id });
+      }
+
+      res.sendStatus(204);
     } catch (err) {
       next(err);
     }

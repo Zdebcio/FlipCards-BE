@@ -22,6 +22,13 @@ export const CreateFlashcardSchema = z.object({
 
 export type CreateFlashcardType = TypeOf<typeof CreateFlashcardSchema>;
 
+export const DeleteFlashcardSchema = z.object({
+  listID: z.string().trim(),
+  flashcardID: z.string().trim(),
+});
+
+export type DeleteFlashcardType = TypeOf<typeof DeleteFlashcardSchema>;
+
 export const GetFlashcardsSchema = PaginationSchema.extend({
   forwardText: z.string().trim().optional(),
   backwardText: z.string().trim().optional(),

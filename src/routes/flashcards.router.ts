@@ -8,4 +8,6 @@ router.get('/', flashcards.getFlashcards);
 
 router.post('/create', flashcards.create);
 
+router.delete('/delete/list/:listID/flashcard/:flashcardID', flashcards.delete);
+
 export default router;
